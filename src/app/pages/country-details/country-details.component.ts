@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { OlympicCountry } from '../../core/models/Olympic';
 import { HttpClient } from '@angular/common/http';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-country-details',
@@ -19,11 +20,20 @@ export class CountryDetailsComponent implements OnInit {
   totalAthletes!: number;
   totalEarnedMedals!: number;
 
+  private httpSubscription?: Subscription;
+
   constructor(private route: ActivatedRoute, private http: HttpClient) { }
 
   ngOnInit() {
     this.loadData();
   }
+
+  ngOnDestroy() {
+    if (this.httpSubscription) {
+      this.httpSubscription.unsubscribe();
+    }
+  }
+
 
   loadData() {
     this.http.get<OlympicCountry[]>('assets/mock/olympic.json').subscribe(data => {

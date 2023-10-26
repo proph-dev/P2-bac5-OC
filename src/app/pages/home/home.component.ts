@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { OlympicService } from 'src/app/core/services/olympic.service';
 
 @Component({
@@ -12,6 +12,8 @@ export class HomeComponent implements OnInit {
   public totalJOs: number = 0;
   public totalCountries: number = 0;
 
+  private olympicsSubscription?: Subscription;
+
   constructor(private olympicService: OlympicService) {}
 
   ngOnInit(): void {
@@ -23,5 +25,11 @@ export class HomeComponent implements OnInit {
         this.totalCountries = data.length;
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.olympicsSubscription) {
+      this.olympicsSubscription.unsubscribe();
+    }
   }
 }
