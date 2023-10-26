@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { OlympicCountry } from '../../models/Olympic';
 import { Participation } from '../../models/Participation';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-pie-chart',
@@ -13,10 +14,18 @@ export class PieChartComponent implements OnInit {
   rawData: OlympicCountry[] = [];
   chartData: { name: string, value: number }[] = [];
 
+  private httpSubscription?: Subscription;
+
   constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit() {
     this.loadData();
+  }
+  
+  ngOnDestroy(): void {
+    if (this.httpSubscription) {
+      this.httpSubscription.unsubscribe();
+    }
   }
 
   loadData() {
