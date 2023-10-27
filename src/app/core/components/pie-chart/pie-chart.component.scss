@@ -1,7 +1,7 @@
 .custom-tooltip {
     background-color: #04838f ;
     color: #fff;
-    padding: .5rem 1rem;
+    padding: .5rem 2rem;
 
     span {
         display: block;
@@ -17,4 +17,8 @@
             }
         }
     }
+}
+
+::ng-deep ngx-tooltip-content.ngx-charts-tooltip-content.type-tooltip {
+    padding: 0;
 }
