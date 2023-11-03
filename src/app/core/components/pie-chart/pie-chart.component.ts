@@ -1,9 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { OlympicCountry } from '../../models/Olympic';
-import { Participation } from '../../models/Participation';
 import { Subscription } from 'rxjs';
+import { OlympicService } from 'src/app/core/services/olympic.service';
 
 @Component({
   selector: 'app-pie-chart',
@@ -14,32 +13,32 @@ export class PieChartComponent implements OnInit, OnDestroy {
   rawData: OlympicCountry[] = [];
   chartData: { name: string, value: number }[] = [];
 
-  private httpSubscription = new Subscription();
+  private subscription = new Subscription();
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private olympicService: OlympicService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadData();
   }
   
   ngOnDestroy(): void {
-    this.httpSubscription.unsubscribe();
+    this.subscription.unsubscribe();
   }
 
   loadData(): void {
-    const subscription = this.http.get<OlympicCountry[]>('assets/mock/olympic.json').subscribe(data => {
+    const subscription = this.olympicService.getOlympics().subscribe(data => {
       this.rawData = data;
       this.chartData = this.processData(this.rawData);
     });
 
-    this.httpSubscription.add(subscription);
+    this.subscription.add(subscription);
   }
 
   processData(data: OlympicCountry[]): { name: string, value: number }[] {
     return data.map((country: OlympicCountry) => {
         return {
             name: country.country,
-            value: country.participations.reduce((acc: number, curr: Participation) => acc + curr.medalsCount, 0)
+            value: country.participations.reduce((acc, curr) => acc + curr.medalsCount, 0)
         };
     });
   }

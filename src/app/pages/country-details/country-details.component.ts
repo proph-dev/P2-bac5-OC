@@ -1,9 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { OlympicCountry } from '../../core/models/Olympic';
-import { Participation } from '../../core/models/Participation';
-import { HttpClient } from '@angular/common/http';
 import { Subscription } from 'rxjs';
+import { OlympicService } from 'src/app/core/services/olympic.service';
 
 export interface ChartData {
   name: string;
@@ -30,29 +29,28 @@ export class CountryDetailsComponent implements OnInit, OnDestroy {
   totalAthletes!: number;
   totalEarnedMedals!: number;
 
-  private httpSubscription: Subscription = new Subscription();
+  private subscription: Subscription = new Subscription();
 
-  constructor(private route: ActivatedRoute, private http: HttpClient) { }
+  constructor(private route: ActivatedRoute, private olympicService: OlympicService) { }
 
   ngOnInit(): void {
     this.loadData();
   }
 
   ngOnDestroy(): void {
-    this.httpSubscription.unsubscribe();
+    this.subscription.unsubscribe();
   }
 
   loadData(): void {
-    const subscription = this.http.get<OlympicCountry[]>('assets/mock/olympic.json').subscribe(data => {
+    const subscription = this.olympicService.getOlympics().subscribe(data => {
       const countryName = this.route.snapshot.paramMap.get('countryName');
-      this.countryData = data.find(country => country.country === countryName);
+      this.countryData = data.find((country: OlympicCountry) => country.country === countryName);
 
-      // Créer les données pour le diagramme linéaire
       if (this.countryData) {
         this.chartData = [
           {
             name: this.countryData.country,
-            series: this.countryData.participations.map((participation: Participation) => ({
+            series: this.countryData.participations.map(participation => ({
               name: participation.year.toString(),
               value: participation.medalsCount
             }))
@@ -63,15 +61,13 @@ export class CountryDetailsComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.httpSubscription.add(subscription);
+    this.subscription.add(subscription);
   }
 
   setOtherInfosData(): void {
     if (this.countryData) {
       this.entries = this.countryData.participations.length;
-
       this.totalEarnedMedals = this.countryData.participations.reduce((acc, cur) => acc + cur.medalsCount, 0);
-
       this.totalAthletes = this.countryData.participations.reduce((acc, cur) => acc + cur.athleteCount, 0);
     }
   }
