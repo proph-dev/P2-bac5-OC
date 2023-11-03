@@ -18,7 +18,7 @@ export class PieChartComponent implements OnInit {
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadData();
   }
   
@@ -28,14 +28,14 @@ export class PieChartComponent implements OnInit {
     }
   }
 
-  loadData() {
+  loadData(): void {
     this.http.get<OlympicCountry[]>('assets/mock/olympic.json').subscribe(data => {
       this.rawData = data;
       this.chartData = this.processData(this.rawData);
     });
   }
 
-  processData(data: OlympicCountry[]) {
+  processData(data: OlympicCountry[]): { name: string, value: number }[] {
     return data.map((country: OlympicCountry) => {
         return {
             name: country.country,
@@ -44,7 +44,7 @@ export class PieChartComponent implements OnInit {
     });
   }
 
-  onCountrySelect(event: { name: string, value: number }) {
+  onCountrySelect(event: { name: string, value: number }): void {
     this.router.navigate(['/country-details', event.name]);
   }
 }

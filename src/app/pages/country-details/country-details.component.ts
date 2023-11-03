@@ -24,18 +24,18 @@ export class CountryDetailsComponent implements OnInit {
 
   constructor(private route: ActivatedRoute, private http: HttpClient) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadData();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     if (this.httpSubscription) {
       this.httpSubscription.unsubscribe();
     }
   }
 
 
-  loadData() {
+  loadData(): void {
     this.http.get<OlympicCountry[]>('assets/mock/olympic.json').subscribe(data => {
       const countryName = this.route.snapshot.paramMap.get('countryName');
       this.countryData = data.find(country => country.country === countryName);
