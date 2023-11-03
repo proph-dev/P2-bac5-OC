@@ -1,8 +1,18 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { OlympicCountry } from '../../core/models/Olympic';
+import { Participation } from '../../core/models/Participation';
 import { HttpClient } from '@angular/common/http';
 import { Subscription } from 'rxjs';
+
+export interface ChartData {
+  name: string;
+  series: { name: string; value: number }[];
+}
+
+export interface ColorScheme {
+  domain: string[];
+}
 
 @Component({
   selector: 'app-country-details',
@@ -11,8 +21,8 @@ import { Subscription } from 'rxjs';
 })
 export class CountryDetailsComponent implements OnInit, OnDestroy {
   countryData: OlympicCountry | undefined;
-  chartData: any[] = [];
-  colorScheme: any = {
+  chartData: ChartData[] = [];
+  colorScheme: ColorScheme = {
     domain: ['#04838f']
   };
 
@@ -32,7 +42,6 @@ export class CountryDetailsComponent implements OnInit, OnDestroy {
     this.httpSubscription.unsubscribe();
   }
 
-
   loadData(): void {
     const subscription = this.http.get<OlympicCountry[]>('assets/mock/olympic.json').subscribe(data => {
       const countryName = this.route.snapshot.paramMap.get('countryName');
@@ -43,7 +52,7 @@ export class CountryDetailsComponent implements OnInit, OnDestroy {
         this.chartData = [
           {
             name: this.countryData.country,
-            series: this.countryData.participations.map(participation => ({
+            series: this.countryData.participations.map((participation: Participation) => ({
               name: participation.year.toString(),
               value: participation.medalsCount
             }))
@@ -53,7 +62,7 @@ export class CountryDetailsComponent implements OnInit, OnDestroy {
         this.setOtherInfosData();
       }
     });
-    
+
     this.httpSubscription.add(subscription);
   }
 
@@ -61,13 +70,9 @@ export class CountryDetailsComponent implements OnInit, OnDestroy {
     if (this.countryData) {
       this.entries = this.countryData.participations.length;
 
-      this.totalEarnedMedals = this.countryData.participations.reduce((acc, cur) => {
-        return acc + cur.medalsCount;
-      }, 0);
+      this.totalEarnedMedals = this.countryData.participations.reduce((acc, cur) => acc + cur.medalsCount, 0);
 
-      this.totalAthletes = this.countryData.participations.reduce((acc, cur) => {
-        return acc + cur.athleteCount;
-      }, 0);
+      this.totalAthletes = this.countryData.participations.reduce((acc, cur) => acc + cur.athleteCount, 0);
     }
   }
 }
