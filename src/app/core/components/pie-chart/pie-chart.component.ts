@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { OlympicCountry } from '../../models/Olympic';
@@ -10,11 +10,11 @@ import { Subscription } from 'rxjs';
   templateUrl: './pie-chart.component.html',
   styleUrls: ['./pie-chart.component.scss']
 })
-export class PieChartComponent implements OnInit {
+export class PieChartComponent implements OnInit, OnDestroy {
   rawData: OlympicCountry[] = [];
   chartData: { name: string, value: number }[] = [];
 
-  private httpSubscription?: Subscription;
+  private httpSubscription = new Subscription();
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -23,16 +23,16 @@ export class PieChartComponent implements OnInit {
   }
   
   ngOnDestroy(): void {
-    if (this.httpSubscription) {
-      this.httpSubscription.unsubscribe();
-    }
+    this.httpSubscription.unsubscribe();
   }
 
   loadData(): void {
-    this.http.get<OlympicCountry[]>('assets/mock/olympic.json').subscribe(data => {
+    const subscription = this.http.get<OlympicCountry[]>('assets/mock/olympic.json').subscribe(data => {
       this.rawData = data;
       this.chartData = this.processData(this.rawData);
     });
+
+    this.httpSubscription.add(subscription);
   }
 
   processData(data: OlympicCountry[]): { name: string, value: number }[] {
