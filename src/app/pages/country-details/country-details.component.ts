@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { OlympicCountry } from '../../core/models/Olympic';
 import { HttpClient } from '@angular/common/http';
@@ -9,7 +9,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './country-details.component.html',
   styleUrls: ['./country-details.component.scss']
 })
-export class CountryDetailsComponent implements OnInit {
+export class CountryDetailsComponent implements OnInit, OnDestroy {
   countryData: OlympicCountry | undefined;
   chartData: any[] = [];
   colorScheme: any = {
@@ -20,7 +20,7 @@ export class CountryDetailsComponent implements OnInit {
   totalAthletes!: number;
   totalEarnedMedals!: number;
 
-  private httpSubscription?: Subscription;
+  private httpSubscription: Subscription = new Subscription();
 
   constructor(private route: ActivatedRoute, private http: HttpClient) { }
 
@@ -29,14 +29,12 @@ export class CountryDetailsComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    if (this.httpSubscription) {
-      this.httpSubscription.unsubscribe();
-    }
+    this.httpSubscription.unsubscribe();
   }
 
 
   loadData(): void {
-    this.http.get<OlympicCountry[]>('assets/mock/olympic.json').subscribe(data => {
+    const subscription = this.http.get<OlympicCountry[]>('assets/mock/olympic.json').subscribe(data => {
       const countryName = this.route.snapshot.paramMap.get('countryName');
       this.countryData = data.find(country => country.country === countryName);
 
@@ -55,6 +53,8 @@ export class CountryDetailsComponent implements OnInit {
         this.setOtherInfosData();
       }
     });
+    
+    this.httpSubscription.add(subscription);
   }
 
   setOtherInfosData(): void {
