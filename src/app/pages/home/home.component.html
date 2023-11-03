@@ -1,10 +1,11 @@
 <main>
-    <h1>Medals per Country</h1>
-
-    <div class="statistics">
-        <p>Number of JOs <span>{{ totalJOs }}</span></p>
-        <p>Number of countries <span>{{ totalCountries }}</span></p>
-    </div>
+    <app-header
+        [title]="'Medals per Country'"
+        [indicators]="[
+            { label: 'Number of JOs', value: totalJOs },
+            { label: 'Number of countries', value: totalCountries }
+        ]">
+    </app-header>
 
     <app-pie-chart></app-pie-chart>
 </main>

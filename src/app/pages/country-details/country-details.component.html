@@ -1,11 +1,12 @@
 <main>
-    <h1>Name of the country</h1>
-
-    <div class="statistics">
-        <p>Number of entries <span>{{ entries }}</span></p>
-        <p>Total number medals <span>{{ totalEarnedMedals }}</span></p>
-        <p>Total number of athletes <span>{{ totalAthletes }}</span></p>
-    </div>
+    <app-header
+        [title]="'Name of the country'"
+        [indicators]="[
+            { label: 'Number of entries', value: entries },
+            { label: 'Total number medals', value: totalEarnedMedals },
+            { label: 'Total number of athletes', value: totalAthletes }
+        ]">
+    </app-header>
 
     <app-line-chart [chartData]="chartData" [colorScheme]="colorScheme"></app-line-chart>
 

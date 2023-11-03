@@ -3,39 +3,7 @@ main {
     flex-direction: column;
     align-items: center;
     padding-top: 4rem;
-
-    h1 {
-        background-color: #04838f;
-        color: #fff;
-        border-radius: 10px;
-        padding: .5rem 1rem;
-        width: max-content;
-        font-weight: 400;
-        letter-spacing: 1px;
-        margin: 0 auto;
-        margin-bottom: 2rem;
-    }
     
-    .statistics {
-        display: flex;
-        justify-content: space-between;
-        width: 600px;
-        margin: 2rem auto;
-
-        p {
-            text-align: center;
-            border: solid 2px #04838f;
-            padding: .5rem 1rem;
-            border-radius: 10px;
-
-            span {
-                display: block;
-                font-weight: 700;
-                margin-top: .5rem;
-            }
-        }
-    }
-
     .back {
         text-decoration: none;
         color: #fff;
@@ -49,4 +17,8 @@ main {
             background-color: darken(#04838f, 10%);
         }
     }
+}
+
+::ng-deep .statistics {
+    width: 600px !important;
 }

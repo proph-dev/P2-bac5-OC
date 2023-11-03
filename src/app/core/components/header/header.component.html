@@ -1,0 +1,9 @@
+<header>
+    <h1>{{ title }}</h1>
+    
+    <div class="statistics">
+        <ng-container *ngFor="let indicator of indicators">
+            <p>{{ indicator.label }} <span>{{ indicator.value }}</span></p>
+        </ng-container>
+    </div>
+</header>
