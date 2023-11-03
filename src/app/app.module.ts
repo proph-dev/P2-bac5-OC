@@ -10,9 +10,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PieChartComponent } from './core/components/pie-chart/pie-chart.component';
 import { CountryDetailsComponent } from './pages/country-details/country-details.component';
 import { LineChartComponent } from './core/components/line-chart/line-chart.component';
+import { HeaderComponent } from './core/components/header/header.component';
 
 @NgModule({
-  declarations: [AppComponent, HomeComponent, NotFoundComponent, PieChartComponent, CountryDetailsComponent, LineChartComponent],
+  declarations: [AppComponent, HomeComponent, NotFoundComponent, PieChartComponent, CountryDetailsComponent, LineChartComponent, HeaderComponent],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule, NgxChartsModule, BrowserAnimationsModule],
   providers: [],
   bootstrap: [AppComponent],
