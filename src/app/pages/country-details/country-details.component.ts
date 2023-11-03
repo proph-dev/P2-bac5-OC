@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { OlympicCountry } from '../../core/models/Olympic';
 import { Subscription } from 'rxjs';
 import { OlympicService } from 'src/app/core/services/olympic.service';
@@ -31,7 +31,11 @@ export class CountryDetailsComponent implements OnInit, OnDestroy {
 
   private subscription: Subscription = new Subscription();
 
-  constructor(private route: ActivatedRoute, private olympicService: OlympicService) { }
+  constructor(
+    private route: ActivatedRoute,
+    private olympicService: OlympicService, 
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.loadData();
@@ -45,6 +49,11 @@ export class CountryDetailsComponent implements OnInit, OnDestroy {
     const subscription = this.olympicService.getOlympics().subscribe(data => {
       const countryName = this.route.snapshot.paramMap.get('countryName');
       this.countryData = data.find((country: OlympicCountry) => country.country === countryName);
+
+      if (!this.countryData) {
+        this.router.navigate(['/not-found']);
+        return;
+      }
 
       if (this.countryData) {
         this.chartData = [
